@@ -8,7 +8,7 @@ public class SistemaGestionInventario {
         ListaInventario inventario = new ListaInventario();
         PilaVentas ventas = new PilaVentas();
         ColaPedidos pedidos = new ColaPedidos();
-        ArbolBPlus arbol = new ArbolBPlus(3); // Grado 3 para el ejemplo
+        ArbolBPlus arbol = new ArbolBPlus(6); // Grado 6 para el ejemplo
 
         while (true) {
             
@@ -74,35 +74,63 @@ public class SistemaGestionInventario {
     }
 
     private static void registrarVenta(ListaInventario inventario, PilaVentas ventas, ArbolBPlus arbol) {
-        String cedulaComprador = JOptionPane.showInputDialog("Ingrese la cédula del comprador:");
+        // Validar la cédula del comprador
+        String cedulaComprador;
+        while (true) {
+            cedulaComprador = JOptionPane.showInputDialog("Ingrese la cédula del comprador:");
+            if (cedulaComprador.matches("\\d{10}")) {
+                break; // Salir del bucle si la cédula es válida
+            } else {
+                JOptionPane.showMessageDialog(null, " Intente nuevamente.");
+            }
+        }
+    
         String nombreComprador = JOptionPane.showInputDialog("Ingrese el nombre del comprador:");
         String apellidoComprador = JOptionPane.showInputDialog("Ingrese el apellido del comprador:");
-
+    
         boolean agregarMasProductos = true;
-
+    
         while (agregarMasProductos) {
-            int id = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto vendido:"));
-            int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad vendida:"));
-
-            NodoProducto producto = inventario.buscarProducto(id);
-            if (producto != null && producto.cantidad >= cantidad) {
-                producto.cantidad -= cantidad;
-                NodoProducto productoEnArbol = arbol.buscar(id);
-                if (productoEnArbol != null) {
-                    productoEnArbol.cantidad = producto.cantidad;
+            boolean productoValido = false;
+            NodoProducto producto = null;
+            int cantidad = 0;
+    
+            while (!productoValido) {
+                int id = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto a vender:"));
+                producto = inventario.buscarProducto(id);
+    
+                if (producto == null || producto.cantidad <= 0) {
+                    JOptionPane.showMessageDialog(null, "Producto no encontrado o sin stock. Intente nuevamente.");
+                } else {
+                    productoValido = true;
+    
+                    // Solicitar la cantidad solo si el producto es válido
+                    while (true) {
+                        cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad vendida:"));
+    
+                        if (producto.cantidad >= cantidad) {
+                            producto.cantidad -= cantidad;
+                            NodoProducto productoEnArbol = arbol.buscar(id);
+                            if (productoEnArbol != null) {
+                                productoEnArbol.cantidad = producto.cantidad;
+                            }
+    
+                            ventas.registrarVenta(id, producto.nombre, producto.categoria, cantidad, producto.precio * cantidad,
+                                    cedulaComprador, nombreComprador, apellidoComprador);
+                            JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.");
+                            break;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Cantidad insuficiente en stock. Intente nuevamente.");
+                        }
+                    }
                 }
-
-                ventas.registrarVenta(id, producto.nombre, producto.categoria, cantidad, producto.precio * cantidad,
-                        cedulaComprador, nombreComprador, apellidoComprador);
-                JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.");
-            } else {
-                JOptionPane.showMessageDialog(null, "Producto no encontrado o cantidad insuficiente.");
             }
-
-            int continuar = JOptionPane.showConfirmDialog(null, "¿Desea agregar más productos a esta venta?");
+    
+            int continuar = JOptionPane.showConfirmDialog(null, "¿Desea agregar más productos a esta venta?", "Agregar Más", JOptionPane.YES_NO_OPTION);
             agregarMasProductos = (continuar == JOptionPane.YES_OPTION);
         }
     }
+    
 
     private static void mostrarInventario(ListaInventario inventario) {
         NodoProducto temp = inventario.primero;
@@ -236,4 +264,3 @@ public class SistemaGestionInventario {
         JOptionPane.showMessageDialog(null, scrollPane, "Historial de Ventas", JOptionPane.INFORMATION_MESSAGE);
     }
 }
-
