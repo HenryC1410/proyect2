@@ -58,15 +58,17 @@ public class SistemaGestionInventario {
                 default:
                     JOptionPane.showMessageDialog(null, "Opción no válida");
             }
-        }
+        }//final del while
     }
 
     private static void agregarProducto(ListaInventario inventario, ArbolBPlus arbol) {
         int id = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto:"));
+        //Integer.parseInt= convierte cadena de texto en un entero (int)
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
         String categoria = JOptionPane.showInputDialog("Ingrese la categoría del producto:");
         int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad en stock:"));
         double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio del producto:"));
+        //Double.parseDouble = convierte candena de texto en un decimal (duble)
 
         inventario.agregarProducto(id, nombre, categoria, cantidad, precio);
         arbol.insertar(id, nombre, categoria, cantidad, precio);
@@ -74,7 +76,7 @@ public class SistemaGestionInventario {
     }
 
     private static void registrarVenta(ListaInventario inventario, PilaVentas ventas, ArbolBPlus arbol) {
-        // Validar la cédula del comprador
+        
         String cedulaComprador;
         while (true) {
             cedulaComprador = JOptionPane.showInputDialog("Ingrese la cédula del comprador:");
@@ -88,7 +90,7 @@ public class SistemaGestionInventario {
         String nombreComprador = JOptionPane.showInputDialog("Ingrese el nombre del comprador:");
         String apellidoComprador = JOptionPane.showInputDialog("Ingrese el apellido del comprador:");
     
-        boolean agregarMasProductos = true;
+        boolean agregarMasProductos = true;//inicia en true para permitir agregar mas productos
     
         while (agregarMasProductos) {
             boolean productoValido = false;
@@ -102,58 +104,57 @@ public class SistemaGestionInventario {
                 if (producto == null || producto.cantidad <= 0) {
                     JOptionPane.showMessageDialog(null, "Producto no encontrado o sin stock. Intente nuevamente.");
                 } else {
-                    productoValido = true;
+                    productoValido = true;//pasa la viariable a verdadero para salir del buble de validación 
     
-                    // Solicitar la cantidad solo si el producto es válido
                     while (true) {
                         cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad vendida:"));
     
                         if (producto.cantidad >= cantidad) {
                             producto.cantidad -= cantidad;
-                            NodoProducto productoEnArbol = arbol.buscar(id);
+                            NodoProducto productoEnArbol = arbol.buscar(id);//busca el producto en el arbol
                             if (productoEnArbol != null) {
-                                productoEnArbol.cantidad = producto.cantidad;
+                                productoEnArbol.cantidad = producto.cantidad;//actualiza la cantidad/sotck en el arbol
                             }
     
                             ventas.registrarVenta(id, producto.nombre, producto.categoria, cantidad, producto.precio * cantidad,
                                     cedulaComprador, nombreComprador, apellidoComprador);
                             JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.");
-                            break;
+                            break;//sale del bucle infinito
                         } else {
                             JOptionPane.showMessageDialog(null, "Cantidad insuficiente en stock. Intente nuevamente.");
                         }
                     }
                 }
-            }
+            }//final del ciclo de la validacion del producto
     
             int continuar = JOptionPane.showConfirmDialog(null, "¿Desea agregar más productos a esta venta?", "Agregar Más", JOptionPane.YES_NO_OPTION);
             agregarMasProductos = (continuar == JOptionPane.YES_OPTION);
-        }
-    }
+        }//fin del ciclo para agregar mas productos
+    }//final del metodo
     
 
     private static void mostrarInventario(ListaInventario inventario) {
         NodoProducto temp = inventario.primero;
         if (temp == null) {
             JOptionPane.showMessageDialog(null, "No hay ningún producto en el inventario.");
-            return;
+            return;//sale del metodo y retorna al menu
         }
 
-        StringBuilder inventarioStr = new StringBuilder();
+        StringBuilder inventarioStr = new StringBuilder();//crea un objecto para construir una cadena de texto
         while (temp != null) {
-            inventarioStr.append("\n ID: ").append(temp.id)
-                    .append("\n Nombre: ").append(temp.nombre)
+            inventarioStr.append("\n ID: ").append(temp.id)//se almace el texto en el objecto de StringBuilder
+                    .append("\n Nombre: ").append(temp.nombre)//append = añade texto a la final de la cadena
                     .append("\n Categoría: ").append(temp.categoria)
                     .append("\n Cantidad: ").append(temp.cantidad)
                     .append("\n Precio: ").append(temp.precio).append(" $")
-                    .append("\n------------------------------------\n");
+                    .append("\n------------------------------------\n");//separacion entre productos
             temp = temp.siguiente;
         }
-        JTextArea textArea = new JTextArea(inventarioStr.toString());
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        textArea.setLineWrap(true);
+        JTextArea textArea = new JTextArea(inventarioStr.toString());//crea un area de texto donde se almacena el StringBuiler
+        JScrollPane scrollPane = new JScrollPane(textArea);//crea el scroll para desplazar el contido del textare por si es mucho
+        textArea.setLineWrap(true);//ajuste de lineas largas 
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));//estable el tamaño del scroll en 500x500 pixeles
         JOptionPane.showMessageDialog(null, scrollPane, "Inventario", JOptionPane.INFORMATION_MESSAGE);
     }
 
