@@ -134,9 +134,7 @@ class ArbolBPlus {
                     x.productos[j] = x.productos[j + 1];
                 }
                 x.numLlaves--;
-            } else {
-                // Implementar eliminación en nodo interno
-            }
+            } 
         } else {
             if (!x.esHoja) {
                 eliminar(x.hijos[i], id);
