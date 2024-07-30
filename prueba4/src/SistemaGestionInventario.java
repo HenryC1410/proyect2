@@ -180,7 +180,8 @@ public class SistemaGestionInventario {
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                     new String[]{"Modificar", "Eliminar"}, "Modificar");
 
-            if (opcion == 0) {
+            if (opcion == 0){
+                //eleccion de elimanar el prducto
                 producto.nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre del producto:", producto.nombre);
                 producto.categoria = JOptionPane.showInputDialog("Ingrese la nueva categoría del producto:", producto.categoria);
                 producto.cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la nueva cantidad en stock:", producto.cantidad));
@@ -193,7 +194,8 @@ public class SistemaGestionInventario {
                     productoEnArbol.precio = producto.precio;
                 }
                 JOptionPane.showMessageDialog(null, "Producto modificado exitosamente.");
-            } else if (opcion == 1) {
+            } else if (opcion == 1){  
+                //eleccion de elimanar el prducto
                 inventario.eliminarProducto(id);
                 arbol.eliminar(id);
                 JOptionPane.showMessageDialog(null, "Producto eliminado exitosamente.");

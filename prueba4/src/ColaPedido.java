@@ -9,6 +9,7 @@ class NodoPedido {
     String categoria;
     NodoPedido siguiente;
 
+    //constructor 
     NodoPedido(int idProducto, int cantidad, String nombreProducto, String categoria) {
         this.idProducto = idProducto;
         this.cantidad = cantidad;
