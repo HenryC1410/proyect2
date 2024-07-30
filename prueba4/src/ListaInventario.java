@@ -32,15 +32,15 @@ class ListaInventario {
             }
             temp = temp.siguiente;
         }
-        return null;
+        return null;//retorna null si no se encontro el id buscado
     }
 
     void eliminarProducto(int id) {
-        if (primero == null) return;
+        if (primero == null) return;//retorna del metodo
 
         if (primero.id == id) {
             primero = primero.siguiente;
-            return;
+            return;//retorna del metodo 
         }
 
         NodoProducto temp = primero;
